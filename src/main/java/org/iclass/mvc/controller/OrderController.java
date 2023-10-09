@@ -2,6 +2,7 @@ package org.iclass.mvc.controller;
 
 import org.iclass.mvc.dto.OrderDto;
 import org.iclass.mvc.service.OrderService;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,28 +24,23 @@ public class OrderController {
 
     @GetMapping("/orderForm")
     public void insert(){
+        /* 주문 등록은 getMapping 은 보여주기 위함 */
     }
-
-    // 주문 처리 컨트롤러
+    
     @PostMapping("/save")
     public String save(OrderDto vo, RedirectAttributes redirectAttributes){
         service.insert(vo);
-        redirectAttributes.addAttribute("bidx", vo.getBidx());
+        /* bidx 를 orderConfirm 에 넘겨줌 */
+        redirectAttributes.addAttribute("bidx",vo.getBidx());
+        
         return "redirect:/order/orderConfirm";
     }
 
-    // 주문 목록 컨트롤러
-    @GetMapping( "/orderDetail")
-    public void orderDetail(@RequestParam("email") String email, Model model){
-        List<OrderDto> list = service.selectByEmail(email);
-        model.addAttribute("list", list);
-        model.addAttribute("email", email);
-    }
     @GetMapping("/orderConfirm")
     public void orderConfirm(@RequestParam("bidx") int bidx, Model model){
         OrderDto vo = service.selectByBidx(bidx);
         model.addAttribute("vo", vo);
-        model.addAttribute("bidx", bidx);
+        model.addAttribute("bidx",bidx);
     }
 
     @GetMapping("/orderList")
@@ -53,5 +49,11 @@ public class OrderController {
         model.addAttribute("list",list);
     }
 
+    @GetMapping("/orderDetail")
+    public void orderDetail(@RequestParam("email") String email, Model model){
+        List<OrderDto> list = service.selectByEmail(email);
+        model.addAttribute("list",list);
+        model.addAttribute("email",email);
+    }
 
 }
